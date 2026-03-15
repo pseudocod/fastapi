@@ -1,7 +1,5 @@
-# app/repositories/user_repository.py
 from typing import Optional
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from app.models.user import User
 
 class UserRepository:
@@ -14,14 +12,14 @@ class UserRepository:
     def get_by_id(self, user_id: int) -> Optional[User]:
         return self.db.query(User).filter(User.id == user_id).first()
     
+    def get_all(self) -> list:
+        return self.db.query(User).all()
+    
     def create(self, user: User) -> User:
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
         return user
-    
-    def get_all(self, skip: int = 0, limit: int = 100) -> list[User]:
-        return self.db.query(User).offset(skip).limit(limit).all()
     
     def delete(self, user: User) -> None:
         self.db.delete(user)
